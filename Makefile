@@ -20,13 +20,14 @@
 
 
 #user specific settings:
-#where to find the IDE
-ADIR:=c:/arduino-1.5.2/hardware
-#which serial port to use (add a file with SUBSYSTEMS=="usb", ATTRS{product}=="Arduino Due Prog. Port", ATTRS{idProduct}=="003d", ATTRS{idVendor}=="2341", SYMLINK+="arduino_due" in /etc/udev/rules.d/ to get this working). for windows, name the port where your arduino is, e.g. COM9
-PORT:=COM4
+#path to the "hardware" directory of the Arduino IDE (ex: C:/arduino-1.5.2/hardware)
+ADIR:=
+
+#the serial port that you have connected the Arduino to (ex: COM4)
+PORT:=
+
 #if we want to verify the bossac upload, define this to -v
 VERIFY:=-v
-
 
 #then some general settings. They should not be necessary to modify.
 CXX:=$(ADIR)/tools/g++_arm_none_eabi/bin/arm-none-eabi-g++
@@ -185,11 +186,6 @@ $(TMPDIR)/$(PROJNAME).bin: $(TMPDIR)/$(PROJNAME).elf
 upload: $(TMPDIR)/$(PROJNAME).bin
 #	stty -F $(PORT) cs8 1200 hupcl
 # above is the unix command, for windows the following will work:
-	mode COM4 baud=1200
-	cmd /c copy /b NUL COM4
+	mode $(PORT) baud=1200
+	cmd /c copy /b NUL $(PORT)
 	$(ADIR)/tools/bossac -p $(PORT) -U false -e -w $(VERIFY) -b $(TMPDIR)/$(PROJNAME).bin -R
-
-#to view the serial port with screen.
-monitor:
-	screen $(PORT) 115200
-
